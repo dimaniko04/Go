@@ -25,9 +25,6 @@ func ReadIntArray() (IntArray, error) {
 	intArray := make(IntArray, len(fields))
 
 	for i, field := range fields {
-		if i == 20 {
-			break
-		}
 		num, err := strconv.Atoi(field)
 
 		if err != nil {
@@ -74,9 +71,9 @@ func (intArray IntArray) Process() fmt.Stringer {
 func (intArray IntArray) String() string {
 	output := ""
 	for _, val := range intArray {
-		output += strconv.Itoa(val) + " "
+		output += fmt.Sprintf("%d ", val)
 	}
-	return fmt.Sprint(output)
+	return output
 }
 
 func (intMatrix *IntMatrix) Process() fmt.Stringer {
@@ -94,11 +91,7 @@ func (intMatrix *IntMatrix) Process() fmt.Stringer {
 func (intMatrix IntMatrix) String() string {
 	output := ""
 	for i, row := range intMatrix {
-		output += strconv.Itoa(i+1) + ". "
-		for _, val := range row {
-			output += strconv.Itoa(val) + " "
-		}
-		output += "\n"
+		output += fmt.Sprintf("%d. %s\n", i+1, IntArray(row))
 	}
-	return fmt.Sprint(output)
+	return output
 }

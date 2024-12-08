@@ -1,0 +1,33 @@
+{{define "clubs"}}
+{{template "header" .}}
+<h1>Clubs</h1>
+<div class="d-flex justify-content-end mb-3">
+    <a href="/clubs/create" class="btn btn-primary">Add Club</a>
+</div>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>City</th>
+        <th>Address</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .Clubs}}
+        <tr>
+            <td>{{.Id}}</td>
+            <td>{{.Name}}</td>
+            <td>{{.City}}</td>
+            <td>{{.Address}}</td>
+            <td>
+                <a href="/clubs/edit/{{.Id}}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="/clubs/delete/{{.Id}}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+    {{end}}
+    </tbody>
+</table>
+{{template "footer" .}}
+{{end}}

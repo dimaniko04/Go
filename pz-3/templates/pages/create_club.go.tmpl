@@ -1,0 +1,11 @@
+{{define "createClub"}}
+{{template "header"}}
+<h1>Create New Club</h1>
+<form action="/clubs/create" method="POST">
+    {{template "inputField" (dict "Id" "clubName" "Label" "Club Name" "Type" "text" "Name" "name" "Value" "")}}
+    {{template "inputField" (dict "Id" "clubCity" "Label" "City" "Type" "text" "Name" "city" "Value" "")}}
+    {{template "inputField" (dict "Id" "clubAddress" "Label" "Address" "Type" "text" "Name" "address" "Value" "")}}
+    <button type="submit" class="btn btn-primary">Create Club</button>
+</form>
+{{template "footer"}}
+{{end}}

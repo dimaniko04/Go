@@ -1,0 +1,11 @@
+{{define "editClub"}}
+{{template "header" .}}
+<h1>Edit Club</h1>
+<form method="POST">
+    {{template "inputField" (dict "Id" "clubName" "Label" "Club Name" "Type" "text" "Name" "name" "Value" .Club.Name)}}
+    {{template "inputField" (dict "Id" "clubCity" "Label" "City" "Type" "text" "Name" "city" "Value" .Club.City)}}
+    {{template "inputField" (dict "Id" "clubAddress" "Label" "Address" "Type" "text" "Name" "address" "Value" .Club.Address)}}
+    <button type="submit" class="btn btn-primary">Edit</button>
+</form>
+{{template "footer" .}}
+{{end}}

@@ -1,0 +1,9 @@
+{{define "inputField"}}
+<div class="mb-3">
+    <label for="{{.Id}}" class="form-label">{{.Label}}</label>
+    <input type="{{.Type}}" class="form-control {{if .Error}}is-invalid{{end}}" id="{{.Id}}" name="{{.Name}}" value="{{.Value}}">
+    {{if .Error}}
+        <div class="invalid-feedback">{{.Error}}</div>
+    {{end}}
+</div>
+{{end}}

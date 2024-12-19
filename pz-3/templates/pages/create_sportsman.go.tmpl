@@ -1,0 +1,15 @@
+{{define "createSportsman"}}
+{{template "header"}}
+<h1>Create New Sportsman</h1>
+<form action="/sportsmen/create" method="POST">
+    {{template "inputField" (dict "Id" "firstName" "Label" "First Name" "Type" "text" "Name" "first_name" "Value" "")}}
+    {{template "inputField" (dict "Id" "lastName" "Label" "Last Name" "Type" "text" "Name" "last_name" "Value" "")}}
+    {{template "inputField" (dict "Id" "birthDate" "Label" "Birth Date" "Type" "date" "Name" "birth_date" "Value" "")}}
+    
+    {{template "dropDown" (dict "Id" "sex" "Label" "Sex" "Name" "sex" "Options" .SexOptions)}}
+    {{template "dropDown" (dict "Id" "club" "Label" "Club" "Name" "club_id" "Options" .ClubOptions)}}
+
+    <button type="submit" class="btn btn-primary">Create Sportsman</button>
+</form>
+{{template "footer"}}
+{{end}}

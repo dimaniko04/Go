@@ -1,0 +1,13 @@
+{{define "dropDown"}}
+<div class="mb-3">
+    <label for="{{.Id}}" class="form-label">{{.Label}}</label>
+    <select class="form-select {{if .Errors.ClubID}}is-invalid{{end}}" id="{{.Id}}" name="{{.Name}}">
+        {{range .Options}}
+            <option value={{.Value}} {{if eq .Value $.Selected}}selected{{end}}>{{.Title}}</option>
+        {{end}}
+    </select>
+    {{if .Error}}
+        <div class="invalid-feedback">{{.Error}}</div>
+    {{end}}
+</div>
+{{end}}

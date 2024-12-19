@@ -1,0 +1,35 @@
+{{define "sportsmen"}}
+{{template "header" .}}
+<h1>Sportsmen</h1>
+<div class="d-flex justify-content-end mb-3">
+    <a href="/sportsmen/create" class="btn btn-primary">Add Sportsman</a>
+</div>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Last Name</th>
+        <th>First Name</th>
+        <th>Birth Date</th>
+        <th>Sex</th>
+        <th>Club Name</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .Sportsmen}}
+        <tr>
+            <td>{{.LastName}}</td>
+            <td>{{.FirstName}}</td>
+            <td>{{.BirthDate}}</td>
+            <td>{{.Sex}}</td>
+            <td>{{.ClubName}}</td>
+            <td>
+                <a href="/sportsmen/edit/{{.Id}}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="/sportsmen/delete/{{.Id}}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+    {{end}}
+    </tbody>
+</table>
+{{template "footer" .}}
+{{end}}

@@ -1,11 +1,13 @@
 package services
 
 type AppServices struct {
-	ClubService ClubService
+	ClubService      ClubService
+	SportsmanService SportsmanService
 }
 
 func GetAppServices() AppServices {
 	return AppServices{
-		ClubService: &clubService{},
+		ClubService:      &clubService{},
+		SportsmanService: &sportsmanService{},
 	}
 }

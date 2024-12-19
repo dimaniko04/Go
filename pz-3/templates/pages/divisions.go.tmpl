@@ -1,0 +1,38 @@
+{{define "divisions"}}
+{{template "header" .}}
+<h1>Divisions</h1>
+<div class="d-flex justify-content-end mb-3">
+    <a href="/divisions/create" class="btn btn-primary">Add Division</a>
+</div>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Sex</th>
+        <th>Age</th>
+        <th>Weight</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .Divisions}}
+        <tr>
+            <td>{{.Name}}</td>
+            <td>{{.Sex}}</td>
+            <td>{{.MinAge}}-{{.MaxAge}}</td>
+            <td>
+                {{if not .MinWeight.Valid}}sub {{.MaxWeight.Float64}}
+                {{else}}
+                    {{.MinWeight.Float64}}{{if not .MaxWeight.Valid}}+
+                    {{else}}-{{.MaxWeight.Float64}}
+                    {{end}}
+                {{end}} kg</td>
+            <td>
+                <a href="/divisions/edit/{{.Id}}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="/divisions/delete/{{.Id}}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+    {{end}}
+    </tbody>
+</table>
+{{template "footer" .}}
+{{end}}

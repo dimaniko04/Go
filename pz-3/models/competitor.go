@@ -1,9 +1,11 @@
 package models
 
+import "database/sql"
+
 type Competitor struct {
 	Sportsman
 	Id              int
-	WeightingResult float32
+	WeightingResult sql.NullFloat64
+	DivisionName    sql.NullString
 	LapNum          int16
-	DivisionName    string
 }

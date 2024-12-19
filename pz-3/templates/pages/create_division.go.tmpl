@@ -1,0 +1,17 @@
+{{define "createDivision"}}
+{{template "header"}}
+<h1>Create New Division</h1>
+<form action="/divisions/create" method="POST">
+    {{template "inputField" (dict "Id" "name" "Label" "Division Name" "Type" "text" "Name" "name" "Value" "")}}
+
+    {{template "dropDown" (dict "Id" "sex" "Label" "Sex" "Name" "sex" "Options" .SexOptions)}}
+
+    {{template "inputField" (dict "Id" "minAge" "Label" "Minimal Age" "Type" "number" "Name" "min_age" "Value" "")}}
+    {{template "inputField" (dict "Id" "maxAge" "Label" "Maximum Age" "Type" "number" "Name" "max_age" "Value" "")}}
+    {{template "inputField" (dict "Id" "minWeight" "Label" "Minimal Weight" "Type" "number" "Name" "min_weight" "Value" "")}}
+    {{template "inputField" (dict "Id" "maxWeight" "Label" "Maximum Weight" "Type" "number" "Name" "max_weight" "Value" "")}}
+
+    <button type="submit" class="btn btn-primary">Create Division</button>
+</form>
+{{template "footer"}}
+{{end}}

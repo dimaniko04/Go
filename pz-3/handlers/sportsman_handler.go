@@ -14,6 +14,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const sportsman_base_route = "/sportsmen"
+
 type SportsmanHandler interface {
 	GetAll(http.ResponseWriter, *http.Request)
 	Create(http.ResponseWriter, *http.Request)
@@ -132,7 +134,7 @@ func (h *sportsmanHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	err = h.sportsmanService.Create(*sportsman)
 
-	http.Redirect(w, r, "/sportsmen", 301)
+	http.Redirect(w, r, sportsman_base_route, 301)
 }
 
 func (h *sportsmanHandler) EditPage(w http.ResponseWriter, r *http.Request) {
@@ -190,7 +192,7 @@ func (h *sportsmanHandler) Edit(w http.ResponseWriter, r *http.Request) {
 
 	err = h.sportsmanService.Edit(id, *sportsman)
 
-	http.Redirect(w, r, "/sportsmen", 301)
+	http.Redirect(w, r, sportsman_base_route, 301)
 }
 
 func (h *sportsmanHandler) Delete(w http.ResponseWriter, r *http.Request) {
@@ -203,5 +205,5 @@ func (h *sportsmanHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	http.Redirect(w, r, "/sportsmen", 301)
+	http.Redirect(w, r, sportsman_base_route, 301)
 }

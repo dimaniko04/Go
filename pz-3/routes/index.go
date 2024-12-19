@@ -15,6 +15,7 @@ func InitRoutes(r *mux.Router, templates *template.Template) {
 
 	initClubRotes(r, h.ClubHandler)
 	initSportsmanRotes(r, h.SportsmanHandler)
+	initDivisionRoutes(r, h.DivisionHandler)
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		err := templates.ExecuteTemplate(w, "index", nil)
 

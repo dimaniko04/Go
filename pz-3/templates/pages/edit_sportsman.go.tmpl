@@ -9,7 +9,7 @@
     {{template "dropDown" (dict "Id" "sex" "Label" "Sex" "Name" "sex" "Options" .SexOptions "Selected" .Sportsman.Sex)}}
     {{template "dropDown" (dict "Id" "club" "Label" "Club" "Name" "club_id" "Options" .ClubOptions "Selected" .Sportsman.ClubId)}}
 
-    <button type="submit" class="btn btn-primary">Create Sportsman</button>
+    <button type="submit" class="btn btn-primary">Save</button>
 </form>
 {{template "footer" .}}
 {{end}}

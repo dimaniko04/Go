@@ -1,0 +1,17 @@
+{{define "editDivision"}}
+{{template "header"}}
+<h1>Edit Division</h1>
+<form method="POST">
+    {{template "inputField" (dict "Id" "name" "Label" "Division Name" "Type" "text" "Name" "name" "Value" .Division.Name)}}
+
+    {{template "dropDown" (dict "Id" "sex" "Label" "Sex" "Name" "sex" "Options" .SexOptions)}}
+
+    {{template "inputField" (dict "Id" "minAge" "Label" "Minimal Age" "Type" "number" "Name" "min_age" "Value" .Division.MinAge)}}
+    {{template "inputField" (dict "Id" "maxAge" "Label" "Maximum Age" "Type" "number" "Name" "max_age" "Value" .Division.MaxAge)}}
+    {{template "inputField" (dict "Id" "minWeight" "Label" "Minimal Weight" "Type" "number" "Name" "min_weight" "Value" .Division.MinWeight.Float64 )}}
+    {{template "inputField" (dict "Id" "maxWeight" "Label" "Maximum Weight" "Type" "number" "Name" "max_weight" "Value" .Division.MaxWeight.Float64)}}
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+{{template "footer"}}
+{{end}}

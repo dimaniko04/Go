@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"path/filepath"
 	"pz-3/database"
 	"pz-3/routes"
 
@@ -26,7 +27,21 @@ func init() {
 		"dict": dict,
 	}
 
-	templates = template.Must(template.New("").Funcs(funcMap).ParseGlob("templates/*/*.go.tmpl"))
+	patterns := []string{
+		"templates/*/*.go.tmpl",
+		"templates/pages/*/*.go.tmpl",
+	}
+
+	var files []string
+	for _, pattern := range patterns {
+		matches, err := filepath.Glob(pattern)
+		if err != nil {
+			panic(err)
+		}
+		files = append(files, matches...)
+	}
+
+	templates = template.Must(template.New("").Funcs(funcMap).ParseFiles(files...))
 }
 
 func main() {

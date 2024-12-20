@@ -1,0 +1,60 @@
+{{define "addCompetitors"}}
+{{template "header" .}}
+<style>
+    .clickable-row {
+        cursor: pointer
+    }
+    .clickable-row:hover {
+        background-color: #8193a5cc
+    }
+</style>
+<h1>Sportsmen</h1>
+<form method="POST">
+    <div class="d-flex justify-content-end mb-3">
+        <button type="submit" class="btn btn-primary">Confirm</button>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Last Name</th>
+            <th>First Name</th>
+            <th>Birth Date</th>
+            <th>Sex</th>
+            <th>Club Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .}}
+            <tr class="clickable-row" data-id="{{.Id}}">
+                <td>
+                    <div class="form-check">
+                        <input 
+                            class="form-check-input"
+                            type="checkbox"
+                            id="sportsman{{.Id}}" 
+                            name="selected_ids"
+                            value="{{.Id}}">
+                    </div>
+                </td>
+                <td>{{.LastName}}</td>
+                <td>{{.FirstName}}</td>
+                <td>{{.BirthDate}}</td>
+                <td>{{.Sex}}</td>
+                <td>{{.ClubName}}</td>
+            </tr>
+        {{end}}
+        </tbody>
+    </table>
+</form>
+<script>
+    document.querySelectorAll(".clickable-row").forEach(function (row) {
+        row.addEventListener("click", function () {
+            const id = this.getAttribute("data-id");
+            const checkbox = document.querySelector(`#sportsman${id}`)
+            checkbox.checked = !checkbox.checked
+        });
+    });
+</script>
+{{template "footer" .}}
+{{end}}

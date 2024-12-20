@@ -1,0 +1,100 @@
+{{define "competitionDetails"}}
+{{template "header" .}}
+<style>
+    .weight-control {
+        width: 100px;
+    }
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f8f9fa;
+    }
+    .table-striped tbody tr:nth-of-type(even) {
+        background-color: #ffffff;
+    }
+    input[type="number"] {
+        background-color: #fdfd96;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        padding: 0.375rem 0.75rem;
+    }
+    input[type="number"]:disabled {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+    }
+</style>
+
+<h1>{{.Name}}</h1>
+<p><strong>Start Date:</strong> {{.StartDate.Format "2006-01-02"}}</p>
+{{with .StartDate.AddDate 0 0 .Duration}}
+    <p><strong>End Date:</strong> {{.Format "2006-01-02"}}</p>
+{{end}}
+<p><strong>City:</strong> {{.City}}</p>
+
+<div class="d-flex justify-content-between align-items-start mb-3 mt-5">
+    <h2>Competitors</h2>
+    <a href="/competitions/{{.Id}}/add-competitors" class="btn btn-primary h-fit">Add Competitors</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Last Name</th>
+        <th>First Name</th>
+        <th>Birth Date</th>
+        <th>Sex</th>
+        <th>Club Name</th>
+        <th>Weight</th>
+        <th>Division</th>
+        <th>Lap Number</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .Competitors}}
+        <tr>
+            <td>{{.LastName}}</td>
+            <td>{{.FirstName}}</td>
+            <td>{{.BirthDate}}</td>
+            <td>{{.Sex}}</td>
+            <td>{{.ClubName}}</td>
+            <td>
+                <form action="/competitions/{{$.Id}}/weight-competitor/{{.Id}}" method="POST">
+                    <input 
+                        type="number" 
+                        class="form-control weight-control"
+                        name="weighting_result"
+                        disabled
+                        value="{{.WeightingResult.Float64}}">
+                </form>
+            </td>
+            <td>{{.DivisionName.String}}</td>
+            <td>{{.LapNum}}</td>
+            <td>
+                <a class="btn btn-warning btn-sm set-weight-button">Set Weight</a>
+                <a href="/competitions/{{$.Id}}/remove-competitor/{{.Id}}" class="btn btn-danger btn-sm">Remove</a>
+            </td>
+        </tr>
+    {{end}}
+    </tbody>
+</table>
+
+<script>
+    document.querySelectorAll(".set-weight-button").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const row = this.closest("tr");
+            const input = row.querySelector(".form-control");
+            const form = row.querySelector("form");
+
+            if (!button.classList.contains("btn-success")) {
+                input.disabled = false;
+                input.focus();
+                button.textContent = "Confirm";
+                button.classList.remove("btn-warning");
+                button.classList.add("btn-success");
+            } else {
+                form.submit();
+            }
+        });
+    });
+</script>
+{{template "footer" .}}
+{{end}}

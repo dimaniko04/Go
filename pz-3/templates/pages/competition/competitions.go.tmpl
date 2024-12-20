@@ -1,5 +1,13 @@
 {{define "competitions"}}
 {{template "header" .}}
+<style>
+    .clickable-row {
+        cursor: pointer
+    }
+    .clickable-row:hover {
+        background-color: #8193a5cc
+    }
+</style>
 <h1>Competitions</h1>
 <div class="d-flex justify-content-end mb-3">
     <a href="/competitions/create" class="btn btn-primary">Add Competition</a>
@@ -15,7 +23,7 @@
     </thead>
     <tbody>
     {{range .Competitions}}
-        <tr>
+        <tr class="clickable-row" data-href="/competitions/{{.Id}}">
             <td>{{.Name}}</td>
             <td>{{.StartDate.Format "2006-01-02"}}</td>
             {{with .StartDate.AddDate 0 0 .Duration}}
@@ -30,5 +38,15 @@
     {{end}}
     </tbody>
 </table>
+<script>
+    document.querySelectorAll(".clickable-row").forEach(function (row) {
+        row.addEventListener("click", function () {
+            const href = this.getAttribute("data-href");
+            if (href) {
+                window.location.href = href;
+            }
+        });
+    });
+</script>
 {{template "footer" .}}
 {{end}}

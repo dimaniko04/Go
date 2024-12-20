@@ -1,0 +1,13 @@
+{{define "createCompetition"}}
+{{template "header"}}
+<h1>Create New Competition</h1>
+<form action="/competitions/create" method="POST">
+    {{template "inputField" (dict "Id" "name" "Label" "Name" "Type" "text" "Name" "name" "Value" "")}}
+    {{template "inputField" (dict "Id" "startDate" "Label" "Start Date" "Type" "date" "Name" "start_date" "Value" "")}}
+    {{template "inputField" (dict "Id" "duration" "Label" "Duration" "Type" "number" "Name" "duration" "Value" "")}}
+    {{template "inputField" (dict "Id" "city" "Label" "City" "Type" "text" "Name" "city" "Value" "")}}
+    
+    <button type="submit" class="btn btn-primary">Create Competition</button>
+</form>
+{{template "footer"}}
+{{end}}

@@ -1,0 +1,15 @@
+{{define "editCompetition"}}
+{{template "header"}}
+<h1>Edit Competition</h1>
+<form method="POST">
+    {{template "inputField" (dict "Id" "name" "Label" "Name" "Type" "text" "Name" "name" "Value" .Competition.Name)}}
+    {{with .Competition.StartDate.Format "2006-01-02"}}
+        {{template "inputField" (dict "Id" "startDate" "Label" "Start Date" "Type" "date" "Name" "start_date" "Value" .)}}
+    {{end}}
+    {{template "inputField" (dict "Id" "duration" "Label" "Duration" "Type" "number" "Name" "duration" "Value" .Competition.Duration)}}
+    {{template "inputField" (dict "Id" "city" "Label" "City" "Type" "text" "Name" "city" "Value" .Competition.City)}}
+    
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+{{template "footer"}}
+{{end}}

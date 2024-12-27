@@ -22,9 +22,14 @@ func dict(values ...interface{}) map[string]interface{} {
 	return d
 }
 
+func mod(x int, m int) int {
+	return x % m
+}
+
 func init() {
 	funcMap := template.FuncMap{
 		"dict": dict,
+		"mod":  mod,
 	}
 
 	patterns := []string{

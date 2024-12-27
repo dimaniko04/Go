@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"math"
 	"net/http"
 	"pz-3/models"
 	"pz-3/services"
@@ -20,12 +21,22 @@ func getDetailsBaseRoute(id string) string {
 	return competition_base_route + "/" + id
 }
 
+func getShuffleBaseRoute(competitionId string, divisionId string) string {
+	return competition_base_route + "/" + competitionId + "/divisions/" + divisionId
+}
+
 type CompetitionHandler interface {
 	GetOne(http.ResponseWriter, *http.Request)
 	AddCompetitors(http.ResponseWriter, *http.Request)
 	AddCompetitorsPage(http.ResponseWriter, *http.Request)
 	WeightCompetitor(http.ResponseWriter, *http.Request)
 	RemoveCompetitor(http.ResponseWriter, *http.Request)
+
+	GetWinners(http.ResponseWriter, *http.Request)
+	GetAllDivisions(http.ResponseWriter, *http.Request)
+	GetOneDivision(http.ResponseWriter, *http.Request)
+	DeclareVictory(http.ResponseWriter, *http.Request)
+	RevokeVictory(http.ResponseWriter, *http.Request)
 
 	GetAll(http.ResponseWriter, *http.Request)
 	Create(http.ResponseWriter, *http.Request)
@@ -141,6 +152,171 @@ func (h *competitionHandler) RemoveCompetitor(w http.ResponseWriter, r *http.Req
 	}
 
 	http.Redirect(w, r, getDetailsBaseRoute(competitionId), 301)
+}
+
+func (h *competitionHandler) GetWinners(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	competitionId := vars["competitionId"]
+	winners, err := h.competitionService.GetWinners(competitionId)
+
+	if err != nil {
+		http.Error(w, err.Error(),
+			http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		Winners []models.Winner
+	}{
+		Winners: winners,
+	}
+
+	err = h.templates.ExecuteTemplate(w, "winners", data)
+
+	if err != nil {
+		http.Error(w, err.Error(),
+			http.StatusInternalServerError)
+	}
+}
+
+func (h *competitionHandler) GetAllDivisions(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	competitionId := vars["competitionId"]
+	divisions, err := h.competitionService.GetAllDivisions(competitionId)
+
+	if err != nil {
+		http.Error(w, err.Error(),
+			http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		Id        string
+		Divisions []models.CompetitionDivision
+	}{
+		Id:        competitionId,
+		Divisions: divisions,
+	}
+
+	err = h.templates.ExecuteTemplate(w, "competitionDivisions", data)
+
+	if err != nil {
+		http.Error(w, err.Error(),
+			http.StatusInternalServerError)
+	}
+}
+
+func setAction(i int, j int, laps [][]models.Shuffle) {
+	//someone is ahead and current sportsmen already lost
+	if laps[i+1][j/2].Id != "" {
+		return
+	}
+	if j%2 == 0 {
+		//sportsmen is the last person on the list, can only move him to next lap
+		if j+1 >= len(laps[i]) {
+			laps[i][j].Action = "declare"
+			return
+		}
+		laps[i][j].Action = "revoke"
+		return
+	}
+	//sportsmen won on previous lap and is waiting for new opponent
+	if laps[i][j-1].Id == "" {
+		laps[i][j].Action = "revoke"
+		return
+	}
+	laps[i][j-1].Action = "declare"
+	laps[i][j].Action = "declare"
+}
+
+func (h *competitionHandler) GetOneDivision(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	competitionId := vars["competitionId"]
+	divisionId := vars["divisionId"]
+	shuffles, err := h.competitionService.GetOneDivision(competitionId, divisionId)
+
+	if err != nil {
+		http.Error(w, err.Error(),
+			http.StatusInternalServerError)
+		return
+	}
+
+	lapSize := len(shuffles)
+	lapQuantity := int(math.Ceil(math.Log2(float64(lapSize))))
+
+	laps := make([][]models.Shuffle, lapQuantity+1)
+	for i := 0; i <= lapQuantity; i++ {
+		laps[i] = make([]models.Shuffle, lapSize)
+		lapSize = (lapSize / 2) + (lapSize % 2)
+	}
+
+	for j, shuffle := range shuffles {
+		temp := j
+		for i := 0; i <= shuffle.LapNum; i++ {
+			laps[i][temp] = shuffle
+			temp = temp / 2
+		}
+		if shuffle.LapNum != 0 {
+			prevLap := shuffle.LapNum - 1
+			prevJ := j / int(math.Pow(2, float64(prevLap)))
+			laps[prevLap][prevJ].Action = "revoke"
+		}
+		if shuffle.LapNum != lapQuantity {
+			prevJ := j / int(math.Pow(2, float64(shuffle.LapNum)))
+			setAction(shuffle.LapNum, prevJ, laps)
+		}
+	}
+
+	data := struct {
+		CompetitionId string
+		DivisionId    string
+		Laps          [][]models.Shuffle
+	}{
+		Laps:          laps,
+		DivisionId:    divisionId,
+		CompetitionId: competitionId,
+	}
+
+	err = h.templates.ExecuteTemplate(w, "shuffles", data)
+
+	if err != nil {
+		http.Error(w, err.Error(),
+			http.StatusInternalServerError)
+	}
+}
+
+func (h *competitionHandler) DeclareVictory(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	divisionId := vars["divisionId"]
+	competitionId := vars["competitionId"]
+
+	err := h.competitionService.DeclareVictory(id)
+
+	if err != nil {
+		http.Error(w, err.Error(),
+			http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, getShuffleBaseRoute(competitionId, divisionId), 301)
+}
+
+func (h *competitionHandler) RevokeVictory(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	divisionId := vars["divisionId"]
+	competitionId := vars["competitionId"]
+
+	err := h.competitionService.RevokeVictory(id)
+
+	if err != nil {
+		http.Error(w, err.Error(),
+			http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, getShuffleBaseRoute(competitionId, divisionId), 301)
 }
 
 func (h *competitionHandler) GetAll(w http.ResponseWriter, _ *http.Request) {

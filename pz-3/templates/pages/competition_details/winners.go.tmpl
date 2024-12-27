@@ -1,0 +1,25 @@
+{{define "winners"}}
+{{template "header" .}}
+<h1>Winners</h1>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Last Name</th>
+        <th>First Name</th>
+        <th>Division</th>
+        <th>Place</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .Winners}}
+        <tr>
+            <td>{{.LastName}}</td>
+            <td>{{.FirstName}}</td>
+            <td>{{.DivisionName}}</td>
+            <td>{{.Place}}</td>
+        </tr>
+    {{end}}
+    </tbody>
+</table>
+{{template "footer" .}}
+{{end}}

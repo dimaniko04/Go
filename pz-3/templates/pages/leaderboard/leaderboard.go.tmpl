@@ -1,0 +1,27 @@
+{{define "leaderboard"}}
+{{template "header" .}}
+<h1>Most performing clubs</h1>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Gold</th>
+        <th>Silver</th>
+        <th>Bronze</th>
+        <th>Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .ClubsStats}}
+        <tr>
+            <td>{{.Name}}</td>
+            <td>{{.Gold}}</td>
+            <td>{{.Silver}}</td>
+            <td>{{.Bronze}}</td>
+            <td>{{.Score}}</td>
+        </tr>
+    {{end}}
+    </tbody>
+</table>
+{{template "footer" .}}
+{{end}}

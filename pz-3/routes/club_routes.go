@@ -14,5 +14,6 @@ func initClubRotes(r *mux.Router, handler handlers.ClubHandler) {
 	s.HandleFunc("/edit/{id:[0-9]+}", handler.EditPage).Methods("GET")
 	s.HandleFunc("/edit/{id:[0-9]+}", handler.Edit).Methods("POST")
 	s.HandleFunc("/delete/{id:[0-9]+}", handler.Delete)
+	s.HandleFunc("/leaderboard", handler.GetAllClubsStats).Methods("GET")
 	s.HandleFunc("/", handler.GetAll).Methods("GET")
 }

@@ -33,3 +33,25 @@ type CompetitionDetails struct {
 	Competition
 	Competitors []Competitor
 }
+
+type Winner struct {
+	FirstName    string
+	LastName     string
+	DivisionName string
+	Place        int
+}
+
+type CompetitionDivision struct {
+	Id                string
+	Name              string
+	SportsmenQuantity int
+}
+
+type Shuffle struct {
+	Id        string
+	FirstName string
+	LastName  string
+	ClubName  string
+	LapNum    int
+	Action    string
+}

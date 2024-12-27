@@ -1,0 +1,70 @@
+{{define "shuffles"}}
+{{template "header" .}}
+<style>
+    .bullet {
+        display: flex;
+        flex-direction: row;
+    }
+    .shuffles_list {
+        display: flex;
+        margin-right: 15px;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+    .shuffle_block {
+        width: 250px;
+        height: 70px;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        span {
+
+        }
+    }
+    .blue {
+        background-color: #d0e7ff;
+    }
+    .red {
+        background-color: #ffd6d6;
+    }
+    .revoke, .declare {
+        cursor: pointer;
+    }
+    .revoke:hover, .declare:hover {
+        opacity: 0.6;
+    }
+</style>
+<div class="bullet">
+    {{range $_, $shuffle := .Laps}}
+    <div class="shuffles_list">
+        {{range $j, $sportsman := $shuffle}}
+        <div 
+            data-href="/competitions/{{$.CompetitionId}}/divisions/{{$.DivisionId}}/{{.Id}}/{{.Action}}"
+            class="shuffle_block {{if eq (mod $j 2) 0}}blue{{else}}red{{end}} 
+            {{.Action}}"
+            >
+            <span>{{.LastName}} {{.FirstName}}</span><br/>
+            <span>{{.ClubName}}</span>
+        </div>
+        {{end}}
+    </div>
+    {{end}}
+</div>
+<script>
+    document.querySelectorAll(".revoke, .declare").forEach(function (div) {
+        div.addEventListener("click", function () {
+            const href = this.getAttribute("data-href");
+            if (href) {
+                fetch(href, {method: "POST", redirect: "follow"})
+                    .then(response => {
+                        if (response.redirected) {
+                            window.location.href = response.url;
+                        }
+                    });
+            }
+        });
+    });
+</script>
+{{template "footer" .}}
+{{end}}

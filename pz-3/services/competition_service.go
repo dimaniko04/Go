@@ -12,6 +12,11 @@ type CompetitionService interface {
 	AddCompetitors(competitionId string, ids []string) error
 	WeightCompetitor(id string, weight float64) error
 	RemoveCompetitor(id string) error
+	GetWinners(competitionId string) ([]models.Winner, error)
+	GetAllDivisions(competitionId string) ([]models.CompetitionDivision, error)
+	GetOneDivision(competitionId string, divisionId string) ([]models.Shuffle, error)
+	DeclareVictory(competitorId string) error
+	RevokeVictory(competitorId string) error
 
 	GetAll() ([]models.Competition, error)
 	Create(models.CompetitionToCreate) error
@@ -229,6 +234,146 @@ func (s *competitionService) Delete(id string) error {
 	db, err := database.Db()
 
 	_, err = db.Exec("DELETE FROM competitions WHERE id = ?", id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *competitionService) GetWinners(competitionId string) ([]models.Winner, error) {
+	db, err := database.Db()
+
+	rows, err := db.Query(`
+		SELECT s.first_name,
+			s.last_name,
+			d.name,
+			finals.final_lap - (lap_num) + 1 AS place
+		FROM competitors ctr
+		INNER JOIN sportsmen s 
+			ON s.id = ctr.sportsman_id 
+		INNER JOIN divisions d
+			ON d.id = ctr.division_id
+		INNER JOIN (
+			SELECT c2.division_id AS division, MAX(lap_num) AS final_lap
+			FROM competitions c 
+			INNER JOIN competitors c2
+				ON c.id = c2.competition_id
+			WHERE c.id = ?
+			GROUP BY c2.division_id
+		) finals 
+			ON finals.division = ctr.division_id
+		WHERE finals.final_lap - (lap_num) + 1 <= 3
+	`, competitionId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	winners := []models.Winner{}
+
+	for rows.Next() {
+		w := models.Winner{}
+		err := rows.Scan(&w.FirstName,
+			&w.LastName,
+			&w.DivisionName,
+			&w.Place)
+		if err != nil {
+			return nil, err
+		}
+		winners = append(winners, w)
+	}
+
+	return winners, nil
+}
+
+func (s *competitionService) GetAllDivisions(competitionId string) ([]models.CompetitionDivision, error) {
+	db, err := database.Db()
+
+	rows, err := db.Query(`
+		SELECT d.id, d.name, COUNT(c2.id) AS participants
+		FROM competitions c
+		INNER JOIN competitors c2 
+			ON c2.competition_id = c.id
+		INNER JOIN divisions d
+			ON d.id = c2.division_id
+		WHERE c.id = ?
+		GROUP BY d.name
+		ORDER BY COUNT(c2.id)
+	`, competitionId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	divisions := []models.CompetitionDivision{}
+
+	for rows.Next() {
+		cd := models.CompetitionDivision{}
+		err := rows.Scan(&cd.Id,
+			&cd.Name,
+			&cd.SportsmenQuantity)
+		if err != nil {
+			return nil, err
+		}
+		divisions = append(divisions, cd)
+	}
+
+	return divisions, nil
+}
+
+func (s *competitionService) GetOneDivision(competitionId string, divisionId string) ([]models.Shuffle, error) {
+	db, err := database.Db()
+
+	rows, err := db.Query(`
+		SELECT c.id, s.first_name, s.last_name, c2.name, c.lap_num 
+		FROM competitors c 
+		INNER JOIN sportsmen s 
+			ON s.id = c.sportsman_id 
+		INNER JOIN clubs c2 
+			ON c2.id = s.club_id
+		WHERE c.division_id = ?
+			AND c.competition_id = ?
+	`, divisionId, competitionId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	shuffles := []models.Shuffle{}
+
+	for rows.Next() {
+		s := models.Shuffle{}
+		err := rows.Scan(&s.Id,
+			&s.FirstName,
+			&s.LastName,
+			&s.ClubName,
+			&s.LapNum)
+		if err != nil {
+			return nil, err
+		}
+		shuffles = append(shuffles, s)
+	}
+
+	return shuffles, nil
+}
+
+func (s *competitionService) DeclareVictory(competitorId string) error {
+	db, err := database.Db()
+
+	_, err = db.Exec("UPDATE competitors SET lap_num = lap_num + 1 WHERE id = ?",
+		competitorId)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *competitionService) RevokeVictory(competitorId string) error {
+	db, err := database.Db()
+
+	_, err = db.Exec("UPDATE competitors SET lap_num = lap_num -1 WHERE id = ?",
+		competitorId)
 
 	if err != nil {
 		return err

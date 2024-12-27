@@ -16,6 +16,7 @@ type ClubHandler interface {
 	EditPage(http.ResponseWriter, *http.Request)
 	Edit(http.ResponseWriter, *http.Request)
 	Delete(http.ResponseWriter, *http.Request)
+	GetAllClubsStats(http.ResponseWriter, *http.Request)
 }
 
 type clubHandler struct {
@@ -134,4 +135,27 @@ func (h *clubHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/clubs", 301)
+}
+
+func (h *clubHandler) GetAllClubsStats(w http.ResponseWriter, _ *http.Request) {
+	clubsStats, err := h.clubService.GetClubsStats()
+
+	if err != nil {
+		http.Error(w, err.Error(),
+			http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		ClubsStats []models.ClubStats
+	}{
+		ClubsStats: clubsStats,
+	}
+
+	err = h.templates.ExecuteTemplate(w, "leaderboard", data)
+
+	if err != nil {
+		http.Error(w, err.Error(),
+			http.StatusInternalServerError)
+	}
 }

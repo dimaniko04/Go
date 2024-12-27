@@ -12,3 +12,11 @@ type ClubToCreate struct {
 	City    string
 	Address string
 }
+
+type ClubStats struct {
+	Name   string
+	Gold   int
+	Silver int
+	Bronze int
+	Score  int
+}

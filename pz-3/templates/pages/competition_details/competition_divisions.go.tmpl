@@ -1,0 +1,39 @@
+{{define "competitionDivisions"}}
+{{template "header" .}}
+<style>
+    .clickable-row {
+        cursor: pointer
+    }
+    .clickable-row:hover {
+        background-color: #8193a5cc
+    }
+</style>
+<h1>Divisions</h1>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Division</th>
+        <th>Number of sportsmen participating</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .Divisions}}
+        <tr class="clickable-row" data-href="/competitions/{{$.Id}}/divisions/{{.Id}}">
+            <td>{{.Name}}</td>
+            <td>{{.SportsmenQuantity}}</td>
+        </tr>
+    {{end}}
+    </tbody>
+</table>
+<script>
+    document.querySelectorAll(".clickable-row").forEach(function (row) {
+        row.addEventListener("click", function () {
+            const href = this.getAttribute("data-href");
+            if (href) {
+                window.location.href = href;
+            }
+        });
+    });
+</script>
+{{template "footer" .}}
+{{end}}

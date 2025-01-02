@@ -368,13 +368,13 @@ func task6() {
 	fmt.Println("Letters in words sorted alphabetically:", sortedString)
 }
 
-type Person struct {
+type person struct {
 	name string
 	age  int
 }
 
-func filterUnder18(people []Person) []Person {
-	var result []Person
+func filterUnder18(people []person) []person {
+	var result []person
 	for _, person := range people {
 		if person.age < 18 {
 			result = append(result, person)
@@ -391,7 +391,7 @@ func removeAtIndex(arr []string, index int) ([]string, error) {
 }
 
 func task7() {
-	people := []Person{
+	people := []person{
 		{"John", 17},
 		{"Alice", 22},
 		{"Bob", 16},

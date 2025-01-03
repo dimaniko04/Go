@@ -22,9 +22,9 @@ func main() {
 
 	api := gin.Default()
 	api.Static("/static", "./static")
-	services := services.GetServices(db)
+	services := services.GetServices(db, env)
 	controllers := controllers.GetControllers(services)
-	routes.Routes(api, controllers)
+	routes.Routes(api, controllers, env)
 
 	if err := api.Run(fmt.Sprintf(":%d", env.ServerPort)); err != nil {
 		log.Fatal(err)

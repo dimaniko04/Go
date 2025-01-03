@@ -15,6 +15,8 @@ type Env struct {
 	DbPassword string `mapstructure:"DB_PASSWORD"`
 	DbHost     string `mapstructure:"DB_HOST"`
 	DbName     string `mapstructure:"DB_NAME"`
+	//jwt token
+	JwtSecret string `mapstructure:"JWT_SECRET"`
 }
 
 func NewEnv(filename string, override bool) *Env {

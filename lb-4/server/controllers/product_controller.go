@@ -32,7 +32,7 @@ func (c *productController) GetAll(ctx *gin.Context) {
 }
 
 func (c *productController) Add(ctx *gin.Context) {
-	var product requests.AddProduct
+	var product requests.AddProductRequest
 
 	if err := ctx.Bind(&product); err != nil {
 		log.Println(err)

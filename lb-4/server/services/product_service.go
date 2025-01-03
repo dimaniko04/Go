@@ -12,7 +12,7 @@ import (
 type ProductService interface {
 	GetAll() ([]models.Product, error)
 	GetOne(string) (*models.Product, error)
-	Add(requests.AddProduct, string) error
+	Add(requests.AddProductRequest, string) error
 	Delete(string) error
 }
 
@@ -62,7 +62,7 @@ func (s *productService) GetOne(id string) (*models.Product, error) {
 	return &product, nil
 }
 
-func (s *productService) Add(product requests.AddProduct, imagePath string) error {
+func (s *productService) Add(product requests.AddProductRequest, imagePath string) error {
 	query := "INSERT INTO products (name, image_path, description, price, stock) VALUES (?, ?, ?, ?, ?)"
 	_, err := s.db.Exec(query, product.Name, imagePath, product.Description, product.Price, product.Stock)
 	if err != nil {

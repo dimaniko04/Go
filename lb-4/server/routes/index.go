@@ -11,6 +11,8 @@ func Routes(api *gin.Engine, c *controllers.Controllers, env *config.Env) *gin.R
 
 	authRoutes(router, c.AuthController)
 	productRoutes(router, c.ProductController, env)
+	cartRoutes(router, c.CartController, env)
+	orderRoutes(router, c.OrderController, env)
 
 	return router
 }

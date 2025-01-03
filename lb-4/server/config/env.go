@@ -17,6 +17,9 @@ type Env struct {
 	DbName     string `mapstructure:"DB_NAME"`
 	//jwt token
 	JwtSecret string `mapstructure:"JWT_SECRET"`
+	//liqpay
+	PublicKey  string `mapstructure:"PUBLIC_KEY"`
+	PrivateKey string `mapstructure:"PRIVATE_KEY"`
 }
 
 func NewEnv(filename string, override bool) *Env {
